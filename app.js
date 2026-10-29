@@ -108,6 +108,50 @@ function showError(message) {
   $("error").hidden = false;
 }
 
+// Theme: light, dark, or follow the system setting
+const systemLight = matchMedia("(prefers-color-scheme: light)");
+
+function getThemePref() {
+  try {
+    return localStorage.getItem("theme") || "system";
+  } catch {
+    return "system";
+  }
+}
+
+function applyTheme(pref) {
+  const resolved = pref === "system" ? (systemLight.matches ? "light" : "dark") : pref;
+  document.documentElement.dataset.theme = resolved;
+  document.querySelectorAll("[data-theme-choice]").forEach((btn) => {
+    btn.setAttribute("aria-pressed", btn.dataset.themeChoice === pref);
+  });
+}
+
+document.querySelectorAll("[data-theme-choice]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const pref = btn.dataset.themeChoice;
+    try {
+      localStorage.setItem("theme", pref);
+    } catch {}
+    applyTheme(pref);
+  });
+});
+
+systemLight.addEventListener("change", () => {
+  if (getThemePref() === "system") applyTheme("system");
+});
+
+applyTheme(getThemePref());
+
+// Greeting based on the time of day
+function greet() {
+  const hour = new Date().getHours();
+  const part = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  $("greeting").textContent = `${part}, Amber Figueroa`;
+}
+
+greet();
+
 $("search-form").addEventListener("submit", (e) => {
   e.preventDefault();
   const query = $("search-input").value.trim();

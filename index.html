@@ -5,9 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather</title>
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Apply the saved theme before the page paints to avoid a flash
+    (function () {
+      var pref = "system";
+      try { pref = localStorage.getItem("theme") || "system"; } catch (e) {}
+      if (pref === "system") pref = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      document.documentElement.dataset.theme = pref;
+    })();
+  </script>
 </head>
 <body>
   <main class="app">
+    <header class="top">
+      <p id="greeting" class="greeting">Hello, Amber Figueroa</p>
+      <div class="glass theme-toggle" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="light">☀️ Light</button>
+        <button type="button" data-theme-choice="dark">🌙 Dark</button>
+        <button type="button" data-theme-choice="system">💻 System</button>
+      </div>
+    </header>
+
     <form id="search-form" class="glass search">
       <input id="search-input" type="text" placeholder="Search city…" autocomplete="off" aria-label="Search city">
       <button type="submit" aria-label="Search">🔍</button>
